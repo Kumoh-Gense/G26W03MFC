@@ -67,6 +67,23 @@ void CG26W03MFCDoc::Serialize(CArchive& ar)
 	}
 }
 
+// CG26W03MFCDoc 명령
+void CG26W03MFCDoc::AddPoint(CPoint pt)
+{
+	m_points.push_back(pt);
+	SetModifiedFlag(); 
+}
+
+void CG26W03MFCDoc::Undo()
+{
+	if (!m_points.empty()) // 데이터가 있을 때만 삭제
+	{
+		m_points.pop_back(); // 마지막 원소를 제거
+		SetModifiedFlag();   
+	}
+}
+
+
 #ifdef SHARED_HANDLERS
 
 // 축소판 그림을 지원합니다.

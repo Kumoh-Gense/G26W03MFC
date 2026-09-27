@@ -5,14 +5,19 @@
 
 #pragma once
 
+#include <vector>
 
 class CG26W03MFCDoc : public CDocument
 {
 protected:
 	CPoint Point = CPoint(-100, -100);
 public:
-	CPoint GetPoint() { return Point; }
-	void SetPoint(CPoint p) { Point = p; }
+	std::vector<CPoint> m_points;
+
+	void AddPoint(CPoint pt);
+	const std::vector<CPoint>& GetPoints() const { return m_points; }
+	void Undo();
+	void ClearPoints();
 
 protected: // serialization에서만 만들어집니다.
 	CG26W03MFCDoc() noexcept;

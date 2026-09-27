@@ -28,6 +28,7 @@ BEGIN_MESSAGE_MAP(CG26W03MFCView, CView)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 	ON_WM_LBUTTONDOWN()
+	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // CG26W03MFCView 생성/소멸
@@ -56,14 +57,15 @@ void CG26W03MFCView::OnDraw(CDC* pDC)
 {
 	CG26W03MFCDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	if (!pDoc)
-		return;
+	if (!pDoc) return;
 
-	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
-	CPoint p = pDoc->GetPoint();
-	pDC->Ellipse(p.x - 30, p.y - 30, p.x + 30, p.y + 30);
+	const std::vector<CPoint>& points = pDoc->GetPoints();
+
+	for (const auto& pt : points)
+	{
+		pDC->Ellipse(pt.x - 30, pt.y - 30, pt.x + 30, pt.y + 30);
+	}
 }
-
 
 // CG26W03MFCView 인쇄
 
@@ -113,8 +115,19 @@ void CG26W03MFCView::OnLButtonDown(UINT nFlags, CPoint point)
 	//CClientDC dc(this);
 	//dc.Ellipse(point.x - 30, point.y - 30, point.x + 30, point.y + 30);
 
-	GetDocument()->SetPoint(point);
+	GetDocument()->AddPoint(point);
 	Invalidate();
 
 	CView::OnLButtonDown(nFlags, point);
+}
+
+void CG26W03MFCView::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	// 1. Document의 Undo 함수 호출
+	GetDocument()->Undo();
+
+	// 2. 화면을 다시 그려서 삭제된 효과를 보여줌
+	Invalidate();
+
+	CView::OnRButtonDown(nFlags, point);
 }
