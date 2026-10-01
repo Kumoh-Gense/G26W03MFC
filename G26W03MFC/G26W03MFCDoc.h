@@ -10,14 +10,23 @@
 class CG26W03MFCDoc : public CDocument
 {
 protected:
-	CPoint Point = CPoint(-100, -100);
+	CArray<CPoint, CPoint> Points;
 public:
-	std::vector<CPoint> m_points;
+	int GetPointsCount() { return (int)Points.GetCount(); }
 
-	void AddPoint(CPoint pt);
-	const std::vector<CPoint>& GetPoints() const { return m_points; }
-	void Undo();
-	void ClearPoints();
+	CPoint GetPoint(int index) { return Points[index]; }
+
+	void AddPoint(CPoint p) {
+		Points.Add(p);
+		SetModifiedFlag();
+	}
+
+	void RemoveLast() {
+		if (Points.GetCount() > 0) {
+			Points.RemoveAt(Points.GetCount() - 1);
+			SetModifiedFlag();
+		}
+	}
 
 protected: // serialization에서만 만들어집니다.
 	CG26W03MFCDoc() noexcept;

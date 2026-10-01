@@ -58,14 +58,41 @@ void CG26W03MFCView::OnDraw(CDC* pDC)
 {
 	CG26W03MFCDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	if (!pDoc) return;
+	if (!pDoc)
+		return;
 
-	const std::vector<CPoint>& points = pDoc->GetPoints();
+	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	//------------------------------------
+	CDC memDC;
+	memDC.CreateCompatibleDC(pDC);
 
-	for (const auto& pt : points)
-	{
-		pDC->Ellipse(pt.x - 30, pt.y - 30, pt.x + 30, pt.y + 30);
+	CRect rect;
+	GetClientRect(&rect);
+
+	CBitmap bmp;
+	bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
+
+	CBitmap* old = memDC.SelectObject(&bmp);
+
+	memDC.FillSolidRect(rect, RGB(255, 255, 255));
+	//------------------------------------
+
+	for (int i = 0; i < pDoc->GetPointsCount(); i++) {
+		CPoint p = pDoc->GetPoint(i);
+		//pDC->Ellipse(p.x - 30, p.y - 30, p.x + 30, p.y + 30);
+		memDC.Ellipse(p.x - 30, p.y - 30, p.x + 30, p.y + 30);
 	}
+
+	//------------------------------------
+	pDC->BitBlt(0, 0,
+		rect.Width(), rect.Height(),
+		&memDC,
+		0, 0,
+		SRCCOPY);
+
+	memDC.SelectObject(old);
+	//------------------------------------
+
 }
 
 // CG26W03MFCView 인쇄
@@ -124,10 +151,8 @@ void CG26W03MFCView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CG26W03MFCView::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	// 1. Document의 Undo 함수 호출
-	GetDocument()->Undo();
-
-	// 2. 화면을 다시 그려서 삭제된 효과를 보여줌
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	GetDocument()->RemoveLast();
 	Invalidate();
 
 	CView::OnRButtonDown(nFlags, point);

@@ -43,9 +43,11 @@ BOOL CG26W03MFCDoc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	Point = CPoint(-100, -100);
 	// TODO: 여기에 재초기화 코드를 추가합니다.
 	// SDI 문서는 이 문서를 다시 사용합니다.
+	//Point = CPoint(-100, -100);
+
+	Points.RemoveAll();
 
 	return TRUE;
 }
@@ -57,31 +59,20 @@ BOOL CG26W03MFCDoc::OnNewDocument()
 
 void CG26W03MFCDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: 여기에 저장 코드를 추가합니다.
-	}
-	else
-	{
-		// TODO: 여기에 로딩 코드를 추가합니다.
-	}
+	//if (ar.IsStoring())
+	//{
+	//	// TODO: 여기에 저장 코드를 추가합니다.
+	//	ar << Point;
+	//}
+	//else
+	//{
+	//	// TODO: 여기에 로딩 코드를 추가합니다.
+	//	ar >> Point;
+	//}
 }
 
 // CG26W03MFCDoc 명령
-void CG26W03MFCDoc::AddPoint(CPoint pt)
-{
-	m_points.push_back(pt);
-	SetModifiedFlag(); 
-}
 
-void CG26W03MFCDoc::Undo()
-{
-	if (!m_points.empty()) // 데이터가 있을 때만 삭제
-	{
-		m_points.pop_back(); // 마지막 원소를 제거
-		SetModifiedFlag();   
-	}
-}
 
 
 #ifdef SHARED_HANDLERS
